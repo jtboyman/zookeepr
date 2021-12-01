@@ -8,6 +8,8 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 // parse incoming JSON data
 app.use(express.json());
+//middleware that makes these files static resources,allowing access to front end w/o making a specific server endpoint
+app.use(express.static('public'));
 
 
 
@@ -112,6 +114,26 @@ app.post('/api/animals', (req, res) => {
   const animal = createNewAnimal(req.body, animals);
   res.json(animal);
   }
+});
+
+//takes u to root/homepage - all it's doing is responding with HTML page to display
+//the file itself is not making it to the browser, only its contents
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/index.html'));
+});
+
+//take u to animals page
+//we don't have api term in endpoint bc this is just an html page it doesnt deal with transferring json data
+app.get('/animals', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+//take u to zookeepers page
+app.get('/zookeepers', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+});
+//wildcard route for anything not previously defined, must come last
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
 app.listen(PORT, () => {
